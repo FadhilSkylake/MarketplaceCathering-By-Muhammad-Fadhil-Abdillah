@@ -24,8 +24,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('dologin');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::resource('menu', MenuController::class);
 Route::middleware(['auth'])->group(function () {
     Route::get('/edit', [AuthController::class, 'login'])->name('edit');
-
-    Route::resource('menu', MenuController::class);
 });

@@ -80,7 +80,7 @@
                             localStorage.setItem('jwtToken', response.token);
 
                             // Redirect to the /users page
-                            window.location.href = response.url;
+                            window.location.href = '/menu';
                         } else {
                             alert('Login failed. Please check your credentials.');
                         }
