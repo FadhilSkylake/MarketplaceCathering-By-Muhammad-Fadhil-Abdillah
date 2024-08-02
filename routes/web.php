@@ -17,14 +17,15 @@ use App\Http\Controllers\AuthController;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('login.form');
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('dologin');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::resource('menu', MenuController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/edit', [AuthController::class, 'login'])->name('edit');
+
+    Route::resource('menu', MenuController::class);
+});

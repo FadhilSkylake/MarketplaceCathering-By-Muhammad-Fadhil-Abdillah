@@ -21,7 +21,7 @@ Route::post('/register', App\Http\Controllers\Api\RegisterController::class)->na
  * route "/login"
  * @method "POST"
  */
-Route::post('/login', App\Http\Controllers\Api\LoginController::class)->name('login');
+Route::post('/login', App\Http\Controllers\Api\LoginController::class)->name('api.login');
 
 /**
  * route "/user"

@@ -46,7 +46,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign In</button>
                     <div class="d-flex align-items-center justify-content-center">
-                        <a class="text-primary fw-bold ms-2" href="./authentication-register.html">Create an account</a>
+                        <a class="text-primary fw-bold ms-2" href="/register">Create an account</a>
                     </div>
                 </form>
               </div>
@@ -80,7 +80,7 @@
                             localStorage.setItem('jwtToken', response.token);
 
                             // Redirect to the /users page
-                            window.location.href = '/users';
+                            window.location.href = response.url;
                         } else {
                             alert('Login failed. Please check your credentials.');
                         }
