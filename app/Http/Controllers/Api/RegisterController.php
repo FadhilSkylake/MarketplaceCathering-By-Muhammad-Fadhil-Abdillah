@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Merchant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +22,8 @@ class RegisterController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required',
             'email'     => 'required|email|unique:users',
-            'password'  => 'required|min:8|confirmed'
+            'password'  => 'required|min:8',
+            'role_id'      => 'required',
         ]);
 
         //if validation fails
@@ -33,8 +35,16 @@ class RegisterController extends Controller
         $user = User::create([
             'name'      => $request->name,
             'email'     => $request->email,
-            'password'  => bcrypt($request->password)
+            'password'  => bcrypt($request->password),
+            'role_id'      => $request->role_id,
         ]);
+
+        // Jika role_id adalah 2, masukkan id di tabel user ke dalam tabel merchant
+        if ($user->role_id == 2) {
+            Merchant::create([
+                'users_id' => $user->id,
+            ]);
+        }
 
         //return response JSON user is created
         if ($user) {

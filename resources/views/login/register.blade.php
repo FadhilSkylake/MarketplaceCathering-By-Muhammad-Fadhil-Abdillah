@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>REGISTER PAGE</title>
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
@@ -25,12 +26,12 @@
                 @if (session('message'))
                 <p>{{ session('message') }}</p>
                 @endif
-                <p class="text-center">Silahkan Login</p>
-                <form id="loginForm" method="POST">
-                    <?= csrf_field(); ?>
+                <p class="text-center">Silahkan Register</p>
+                <form id="registerForm" method="POST" enctype="multipart/form-data">
+                  @csrf
                     <div class="mb-3">
                         <label for="Username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="text" name="username">
+                        <input type="text" class="form-control" id="name" name="name">
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email</label>
@@ -41,16 +42,14 @@
                         <input type="password" class="form-control" id="password" name="password">
                     </div>
                     <div class="mb-4">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password">
+                        <label for="Role" class="form-label">Register Sebagai</label>
+                        <select class="form-select" aria-label="Default select example" id="role_id" name="role_id">
+                          <option selected disabled>Open this select menu</option>
+                          @foreach ($role as $r)
+                          <option value="{{ $r->id }}">{{ $r->role_name }}</option>
+                      @endforeach
+                        </select>
                     </div>
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input primary" type="checkbox" value="" id="rememberMe" unchecked>
-                            <label class="form-check-label text-dark" for="rememberMe">
-                                Remember this Device
-                            </label>
-                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign In</button>
                     <div class="d-flex align-items-center justify-content-center">
@@ -67,38 +66,56 @@
   <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-     $(document).ready(function() {
-            $('#loginForm').on('submit', function(event) {
-                event.preventDefault();
-                
-                const email = $('#email').val();
-                const password = $('#password').val();
+    $(document).ready(function() {
+    $('#registerForm').on('submit', function(event) {
+        event.preventDefault();
 
-                $.ajax({
-                    url: 'http://localhost:8000/api/login',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        email: email,
-                        password: password
-                    }),
-                    success: function(response) {
-                        if (response.success) {
-                            // Store the JWT token in local storage or cookie
-                            localStorage.setItem('jwtToken', response.token);
+        const name = $('#name').val();
+        const email = $('#email').val();
+        const password = $('#password').val();
+        const role_id = $('#role_id').val();
 
-                            // Redirect to the /users page
-                            window.location.href = response.url;
-                        } else {
-                            alert('Login failed. Please check your credentials.');
-                        }
-                    },
-                    error: function() {
-                        alert('An error occurred. Please try again.');
+        $.ajax({
+            url: 'http://localhost:8000/api/register',
+            method: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify({
+                name: name,
+                email: email,
+                password: password,
+                role_id: role_id
+            }),
+            success: function(response) {
+                if (response.success) {
+                    // Store the JWT token in local storage or cookie
+                    localStorage.setItem('jwtToken', response.success);
+
+                    // Redirect to the /register page
+                    window.location.href = '/';
+                } else {
+                    alert('Register failed. Please check your credentials.');
+                }
+            },
+            error: function(response) {
+                // Optional: Display the error messages returned by the server
+                if (response.status === 422) {
+                    const errors = response.responseJSON;
+                    let errorMessages = '';
+                    for (let field in errors) {
+                        errorMessages += errors[field].join('<br>') + '<br>';
                     }
-                });
-            });
+                    alert(errorMessages);
+                } else {
+                    alert('An error occurred. Please try again.');
+                }
+            }
         });
+    });
+});
+
   </script>
   
 </body>

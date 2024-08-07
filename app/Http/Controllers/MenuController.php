@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
+
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login']]);
+    // }
     /**
      * Display a listing of the resource.
      */

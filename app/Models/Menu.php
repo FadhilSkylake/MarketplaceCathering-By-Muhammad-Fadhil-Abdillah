@@ -14,8 +14,15 @@ class Menu extends Model
 
     protected $fillable = [
         'nama_menu',
+        'merchant_id',
         'deskripsi_menu',
         'foto_menu',
         'harga_menu',
     ];
+
+    // Relasi belongsTo dengan model Merchant
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id');
+    }
 }

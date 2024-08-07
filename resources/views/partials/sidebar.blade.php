@@ -17,9 +17,17 @@
             <span class="hide-menu">Data</span>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link" href="{{ url('/user') }}" aria-expanded="false">
+            <a class="sidebar-link" href="{{ url('/dashboard') }}" aria-expanded="false">
               <span>
                 <i class="ti ti-layout-dashboard"></i>
+              </span>
+              <span class="hide-menu">Dashboard</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ url('/user') }}" aria-expanded="false">
+              <span>
+                <i class="ti ti-user"></i>
               </span>
               <span class="hide-menu">User</span>
             </a>

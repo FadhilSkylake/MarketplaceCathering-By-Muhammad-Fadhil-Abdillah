@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -16,33 +19,47 @@ class LoginController extends Controller
      */
     public function __invoke(Request $request)
     {
-        //set validation
+        // Set validation
         $validator = Validator::make($request->all(), [
-            'email'     => 'required',
-            'password'  => 'required'
+            'email'     => 'required|email',
+            'password'  => 'required|string|min:6'
         ]);
 
-        //if validation fails
+        // If validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        //get credentials from request
+        // Get credentials from request
         $credentials = $request->only('email', 'password');
 
-        //if auth failed
-        if (!$token = auth()->guard('api')->attempt($credentials)) {
+        // Attempt to authenticate the user and get the token
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Email atau Password Anda salah'
             ], 401);
         }
 
-        //if auth success
+        // Get authenticated user
+        $user = Auth::user();
+
+        // Determine the URL based on user role
+        $url = '';
+        if ($user->role_id == 1) {
+            $url = '/dashboard'; // Redirect dashboard
+        } elseif ($user->role_id == 2) {
+            $url = '/dashboard'; // Redirect dashboard
+        } elseif ($user->role_id == 3) {
+            $url = '/dashboard'; // Redirect dashboard
+        }
+
+        // Return the token and user info on successful authentication
         return response()->json([
             'success' => true,
-            'user'    => auth()->guard('api')->user(),
-            'token'   => $token
+            'user'    => $user,
+            'token'   => $token,
+            'url'     => $url
         ], 200);
     }
 }
